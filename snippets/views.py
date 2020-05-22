@@ -1,44 +1,43 @@
-from rest_framework.mixins import (
-                                    ListModelMixin, 
-                                    CreateModelMixin,
-                                    UpdateModelMixin, 
-                                    RetrieveModelMixin,
-                                    DestroyModelMixin,
-                    
-                                )
-from rest_framework.generics import GenericAPIView
-
+from django.contrib.auth.models import User
+from rest_framework import permissions
+from rest_framework.generics import (
+                                    ListCreateAPIView, 
+                                    RetrieveUpdateDestroyAPIView,
+                                    ListAPIView,
+                                    RetrieveAPIView,
+                                    )
 from .models import Snippet
-from .serializers import SnippetSerializer
+from .serializers import SnippetSerializer, UserSerializer
+from .permissions import IsOwnerOrReadOnly
 
 
-class SnippetList(ListModelMixin, CreateModelMixin, GenericAPIView):
-    """
-    List all snippets, or create a new snippet.
-    """
+
+
+class SnippetList(ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
+    # переопределяем и добавляем usera к данным
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
-class SnippetDetail(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
-    """
-    Retrieve, update or delete
-    """
+class SnippetDetail(RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                            IsOwnerOrReadOnly,]
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+class UserList(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+
+
+class UserDetail(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    
