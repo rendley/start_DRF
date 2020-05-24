@@ -1,0 +1,29 @@
+1. подготовка проекта
+2. создание модели
+3. создание класса сериализатора ModelSerializer
+4. написание представлений через средства django
+5. написание роутинга
+6. подключение к главному urls
+7. тестирование
+8. переписываем апи на функциях DRF
+9. добавление аргумента format=None в представления 
+10. добавление urlpatterns = format_suffix_patterns(urlpatterns)
+11. переписываем представления на класса ApiView, меняем urls на классы
+12. Использование Mixin и GenericAPIView class and Mixin CRUD
+13. from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+14. Аутентификация и добаление пользователей в модель и сериализация user
+15. Связывание пользователей с нашим классом
+16. CharField(read_only=True) = ReadOnlyField
+17. permission_classes = [permissions.IsAuthenticatedOrReadOnly] - ограничения на незарегистрир пользов
+18. Форма для авторизации 
+ urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
+]
+19. permissions.py - ограничения на редактирование и удаление чужих данных
+20. class IsOwnerOrReadOnly(permissions.BasePermission) - огрнаничение на редактирование 
+                                                        чужих постов - пропали кнопки PUT DELETE
+21. Пагинация +  Hiperlink class ссылки на сущности обьектов
+
+
+
+# min/js/ac34

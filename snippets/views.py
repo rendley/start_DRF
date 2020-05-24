@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import permissions
+
 from rest_framework.generics import (
                                     ListCreateAPIView, 
                                     RetrieveUpdateDestroyAPIView,
@@ -12,13 +13,12 @@ from .permissions import IsOwnerOrReadOnly
 
 
 
-
 class SnippetList(ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    # переопределяем и добавляем usera к данным
+    # add user
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -29,11 +29,9 @@ class SnippetDetail(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                             IsOwnerOrReadOnly,]
 
-
 class UserList(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
 
 
 class UserDetail(RetrieveAPIView):
